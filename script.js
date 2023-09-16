@@ -1,25 +1,17 @@
- const items = document.querySelectorAll('.item');
-    let dragItem = null;
+it('should simulate click and drag to scroll', () => {
+  cy.get('.items').should('be.visible').then($items => {
+    const startPosX = 493;
+    const endPosX = 271;
 
-    // Add dragstart event listener to each cube
-    items.forEach(item => {
-      item.addEventListener('dragstart', (e) => {
-        dragItem = e.target;
-        e.dataTransfer.effectAllowed = 'move';
-        e.dataTransfer.setData('text/html', e.target.innerHTML);
-      });
-    });
+    cy.wrap($items)
+      .trigger('mousedown', { which: 1, pageX: startPosX, pageY: 391 })
+      .trigger('mousemove', { which: 1, pageX: endPosX, pageY: 391 })
+      .trigger('mouseup');
 
-    // Add dragover event listener to the items container
-    document.querySelector('.items').addEventListener('dragover', (e) => {
-      e.preventDefault();
-    });
+    cy.wait(1000); // Adjust this delay as needed
 
-    // Add drop event listener to the items container
-    document.querySelector('.items').addEventListener('drop', (e) => {
-      e.preventDefault();
-      if (dragItem) {
-        dragItem.innerHTML = e.dataTransfer.getData('text/html');
-        dragItem = null;
-      }
+    cy.wrap($items).should($items => {
+      expect($items[0].scrollLeft).to.greaterThan(0);
     });
+  });
+});
