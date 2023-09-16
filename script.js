@@ -1,4 +1,4 @@
-const items = document.querySelectorAll('.item');
+ const items = document.querySelectorAll('.item');
     let dragItem = null;
 
     // Add dragstart event listener to each cube
