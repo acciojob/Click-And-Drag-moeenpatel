@@ -1,17 +1,37 @@
-it('should simulate click and drag to scroll', () => {
-  cy.get('.items').should('be.visible').then($items => {
-    const startPosX = 493;
-    const endPosX = 271;
+const cube = document.querySelector('.cube');
 
-    cy.wrap($items)
-      .trigger('mousedown', { which: 1, pageX: startPosX, pageY: 391 })
-      .trigger('mousemove', { which: 1, pageX: endPosX, pageY: 391 })
-      .trigger('mouseup');
+    let isDragging = false;
+    let startX = 0;
+    let startY = 0;
+    let offsetX = 0;
+    let offsetY = 0;
 
-    cy.wait(1000); // Adjust this delay as needed
+    // Function to handle the mousedown event
+    function handleMouseDown(event) {
+      isDragging = true;
+      startX = event.clientX;
+      startY = event.clientY;
+      offsetX = parseInt(cube.style.left) || 0;
+      offsetY = parseInt(cube.style.top) || 0;
+    }
 
-    cy.wrap($items).should($items => {
-      expect($items[0].scrollLeft).to.greaterThan(0);
-    });
-  });
-});
+    // Function to handle the mousemove event
+    function handleMouseMove(event) {
+      if (!isDragging) return;
+
+      const newX = offsetX + event.clientX - startX;
+      const newY = offsetY + event.clientY - startY;
+
+      cube.style.left = newX + 'px';
+      cube.style.top = newY + 'px';
+    }
+
+    // Function to handle the mouseup event
+    function handleMouseUp() {
+      isDragging = false;
+    }
+
+    // Add event listeners
+    cube.addEventListener('mousedown', handleMouseDown);
+    cube.addEventListener('mousemove', handleMouseMove);
+    window.addEventListener('mouseup', handleMouseUp);
