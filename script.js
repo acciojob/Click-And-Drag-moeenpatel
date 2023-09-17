@@ -1,25 +1,34 @@
- const items = document.querySelectorAll('.item');
-    let dragItem = null;
+const slider = document.querySelector(".items");
+let isDown = false;
+let startX;
+let scrollLeft;
 
-    // Add dragstart event listener to each cube
-    items.forEach(item => {
-      item.addEventListener('dragstart', (e) => {
-        dragItem = e.target;
-        e.dataTransfer.effectAllowed = 'move';
-        e.dataTransfer.setData('text/html', e.target.innerHTML);
-      });
-    });
+// when mouse down active class added so mouse changed to grab and background transforms to full size
+// startX = start position of cursor calculated from event.x position - margin.
+slider.addEventListener("mousedown", (e) => {
+  isDown = true;
+  slider.classList.add("active");
+  startX = e.pageX - slider.offsetLeft;
+  scrollLeft = slider.scrollLeft;
+});
 
-    // Add dragover event listener to the items container
-    document.querySelector('.items').addEventListener('dragover', (e) => {
-      e.preventDefault();
-    });
+slider.addEventListener("mouseleave", () => {
+  isDown = false;
+  slider.classList.remove("active");
+});
 
-    // Add drop event listener to the items container
-    document.querySelector('.items').addEventListener('drop', (e) => {
-      e.preventDefault();
-      if (dragItem) {
-        dragItem.innerHTML = e.dataTransfer.getData('text/html');
-        dragItem = null;
-      }
-    });
+slider.addEventListener("mouseup", () => {
+  isDown = false;
+  slider.classList.remove("active");
+});
+
+slider.addEventListener("mousemove", (e) => {
+  if (!isDown) return; //stop the function from running
+  //console.log(isDown);
+  e.preventDefault(); // prevent selection of text etc inside area.
+  const x = e.pageX - slider.offsetLeft;
+  const scrollMultiple = 3; // scroll 3 pixels for each pixel moved by the mouse.
+  const walk = (x - startX) * scrollMultiple;
+  slider.scrollLeft = scrollLeft - walk;
+  //console.log("slider scrollleft", slider.scrollLeft); //max value 4207.2001953125
+});
