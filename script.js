@@ -1,29 +1,25 @@
- const slider = document.querySelector('.items'); 
- let isDown = false; 
- let startX; 
- let scrollLeft; 
-  
- slider.addEventListener('mousedown', (e) => { 
- isDown = true; 
- slider.classList.add('active'); 
- startX = e.pageX - slider.offsetLeft; 
- scrollLeft = slider.scrollLeft; 
- }); 
-  
- slider.addEventListener('mouseleave', () => { 
- isDown = false; 
- slider.classList.remove('active'); 
- }); 
-  
- slider.addEventListener('mouseup', () => { 
- isDown = false; 
- slider.classList.remove('active'); 
- }); 
-  
- slider.addEventListener('mousemove', (e) => { 
- if (!isDown) return; // stop the fn from running 
- e.preventDefault(); 
- const x = e.pageX - slider.offsetLeft; 
- const walk = (x - startX) * 3; 
- slider.scrollLeft = scrollLeft - walk; 
- });
+ const items = document.querySelectorAll('.item');
+    let dragItem = null;
+
+    // Add dragstart event listener to each cube
+    items.forEach(item => {
+      item.addEventListener('dragstart', (e) => {
+        dragItem = e.target;
+        e.dataTransfer.effectAllowed = 'move';
+        e.dataTransfer.setData('text/html', e.target.innerHTML);
+      });
+    });
+
+    // Add dragover event listener to the items container
+    document.querySelector('.items').addEventListener('dragover', (e) => {
+      e.preventDefault();
+    });
+
+    // Add drop event listener to the items container
+    document.querySelector('.items').addEventListener('drop', (e) => {
+      e.preventDefault();
+      if (dragItem) {
+        dragItem.innerHTML = e.dataTransfer.getData('text/html');
+        dragItem = null;
+      }
+    });
