@@ -1,13 +1,4 @@
- .cube {
-      width: 100px;
-      height: 100px;
-      background-color: red;
-      position: absolute;
-      top: 0;
-      left: 0;
-      cursor: move;
-    }
-html {
+ html {
   box-sizing: border-box;
   background: url('https://source.unsplash.com/NFs6dRTBgaM/2000x2000') fixed;
   background-size: cover;
@@ -77,4 +68,3 @@ body {
 
 .item:nth-child(even) { transform: scaleX(1.31) rotateY(40deg); }
 .item:nth-child(odd) { transform: scaleX(1.31) rotateY(-40deg); }
- 
