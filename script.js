@@ -1,32 +1,17 @@
+it('should simulate click and drag to scroll', () => {
+  cy.get('.items').should('be.visible').then($items => {
+    const startPosX = 493;
+    const endPosX = 271;
 
-    const items = document.querySelector('.items');
-    let isDragging = false;
-    let startX = 0;
-    let scrollLeft = 0;
+    cy.wrap($items)
+      .trigger('mousedown', { which: 1, pageX: startPosX, pageY: 391 })
+      .trigger('mousemove', { which: 1, pageX: endPosX, pageY: 391 })
+      .trigger('mouseup');
 
-    items.addEventListener('mousedown', (e) => {
-      isDragging = true;
-      startX = e.pageX - items.offsetLeft;
-      scrollLeft = items.scrollLeft;
+    cy.wait(1000); // Adjust this delay as needed
 
-      items.style.cursor = 'grabbing';
+    cy.wrap($items).should($items => {
+      expect($items[0].scrollLeft).to.greaterThan(0);
     });
-
-    items.addEventListener('mousemove', (e) => {
-      if (!isDragging) return;
-      e.preventDefault();
-
-      const x = e.pageX - items.offsetLeft;
-      const walk = (x - startX) * 3; // Adjust the sliding speed
-      items.scrollLeft = scrollLeft - walk;
-    });
-
-    items.addEventListener('mouseup', () => {
-      isDragging = false;
-      items.style.cursor = 'grab';
-    });
-
-    items.addEventListener('mouseleave', () => {
-      isDragging = false;
-      items.style.cursor = 'grab';
-    });
+  });
+});
